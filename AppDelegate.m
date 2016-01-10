@@ -2,13 +2,13 @@
 #import <simd/simd.h>
 
 typedef struct {
+    matrix_float4x4 rotationMatrix;
+} Uniforms;
+
+typedef struct {
     float position[4];
     float color[4];
 } VertexIn;
-
-typedef struct {
-    matrix_float4x4 rotationMatrix;
-} Uniforms;
 
 static const VertexIn quadVertexData[] =
 {
