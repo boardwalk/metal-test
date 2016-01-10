@@ -1,2 +1,8 @@
 #!/bin/sh
-gcc -o metal-test -lobjc -fobjc-arc -framework AppKit -framework Metal -framework MetalKit -framework QuartzCore *.m
+gcc -Wall -Wextra -Werror -fobjc-arc \
+    -lobjc \
+    -framework AppKit \
+    -framework Metal \
+    -framework MetalKit \
+    -framework QuartzCore \
+    *.m -o metal-test

@@ -67,7 +67,7 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
      * Metal setup: Library
      */
     NSString* librarySrc = [NSString stringWithContentsOfFile:@"library.msl" encoding:NSUTF8StringEncoding error:&error];
-    if(!progSrc) {
+    if(!librarySrc) {
         [NSException raise:@"Failed to read shaders" format:@"%@", [error localizedDescription]];
     }
 
@@ -114,12 +114,15 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
 {
+    (void)theApplication;
     return YES;
 }
 
 - (void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size
 {
     // Window is not resizable
+    (void)view;
+    (void)size;
 }
 
 - (void)drawInMTKView:(MTKView *)view
