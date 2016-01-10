@@ -1,5 +1,5 @@
 #!/bin/sh
-gcc -Wall -Wextra -Werror -fobjc-arc \
+gcc -std=c11 -Wall -Wextra -Wpedantic -Werror -fobjc-arc \
     -lobjc \
     -framework AppKit \
     -framework Metal \

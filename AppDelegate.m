@@ -1,22 +1,25 @@
 #import "AppDelegate.h"
 #import <simd/simd.h>
 
-static const float quadVertexData[] =
-{
-     0.5, -0.5, 0.0, 1.0,     1.0, 0.0, 0.0, 1.0,
-    -0.5, -0.5, 0.0, 1.0,     0.0, 1.0, 0.0, 1.0,
-    -0.5,  0.5, 0.0, 1.0,     0.0, 0.0, 1.0, 1.0,
+typedef struct {
+    float position[4];
+    float color[4];
+} VertexIn;
 
-     0.5,  0.5, 0.0, 1.0,     1.0, 1.0, 0.0, 1.0,
-     0.5, -0.5, 0.0, 1.0,     1.0, 0.0, 0.0, 1.0,
-    -0.5,  0.5, 0.0, 1.0,     0.0, 0.0, 1.0, 1.0,
+static const VertexIn quadVertexData[] = {
+    { { 0.5, -0.5, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0} },
+    { {-0.5, -0.5, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0} },
+    { {-0.5,  0.5, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0} },
+    { { 0.5,  0.5, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0} },
+    { { 0.5, -0.5, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0} },
+    { {-0.5,  0.5, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0} }
 };
 
 typedef struct {
-    matrix_float4x4 rotation_matrix;
+    matrix_float4x4 rotationMatrix;
 } Uniforms;
 
-static matrix_float4x4 rotation_matrix_2d(float radians)
+static matrix_float4x4 rotationMatrix2D(float radians)
 {
     float cos = cosf(radians);
     float sin = sinf(radians);
@@ -119,11 +122,11 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
 - (void)drawInMTKView:(MTKView*)view
 {
     double rotationAngle = fmod(CACurrentMediaTime(), 2.0 * M_PI);
-    Uniforms uniforms = {
-        .rotation_matrix = rotation_matrix_2d(rotationAngle)
+    void* uniformSrc = &(Uniforms) {
+        .rotationMatrix = rotationMatrix2D(rotationAngle)
     };
-    void* bufferPtr = [_uniformBuffer contents];
-    memcpy(bufferPtr, &uniforms, sizeof(Uniforms));
+    void* uniformTgt = [_uniformBuffer contents];
+    memcpy(uniformTgt, uniformSrc, sizeof(Uniforms));
 
     MTLRenderPassDescriptor* passDescriptor = [view currentRenderPassDescriptor];
     id<CAMetalDrawable> drawable = [view currentDrawable];

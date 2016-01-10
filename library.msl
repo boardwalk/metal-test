@@ -4,7 +4,7 @@ using namespace metal;
 
 struct Uniforms
 {
-    float4x4 rotation_matrix;
+    float4x4 rotationMatrix;
 };
 
 struct VertexIn
@@ -24,7 +24,7 @@ vertex VertexOut vertex_function(device VertexIn *vertices [[buffer(0)]],
         uint vid [[vertex_id]])
 {
     VertexOut out;
-    out.position = uniforms.rotation_matrix * vertices[vid].position;
+    out.position = uniforms.rotationMatrix * vertices[vid].position;
     out.color = vertices[vid].color;
     return out;
 }
