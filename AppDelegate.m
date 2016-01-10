@@ -77,8 +77,8 @@ static matrix_float4x4 rotationMatrix2D(float radians)
     id<CAMetalDrawable> drawable = [view currentDrawable];
 
     MTLRenderPipelineDescriptor* pipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
-    pipelineDesc.vertexFunction = [_library newFunctionWithName:@"vertex_function"];
-    pipelineDesc.fragmentFunction = [_library newFunctionWithName:@"fragment_function"];
+    pipelineDesc.vertexFunction = [_library newFunctionWithName:@"vertexFunction"];
+    pipelineDesc.fragmentFunction = [_library newFunctionWithName:@"fragmentFunction"];
     pipelineDesc.colorAttachments[0].pixelFormat = drawable.texture.pixelFormat;
 
     _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineDesc error:&error];

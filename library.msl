@@ -19,7 +19,7 @@ struct VertexOut
     float4 color;
 };
 
-vertex VertexOut vertex_function(device VertexIn *vertices [[buffer(0)]],
+vertex VertexOut vertexFunction(device VertexIn *vertices [[buffer(0)]],
         constant Uniforms &uniforms [[buffer(1)]],
         uint vid [[vertex_id]])
 {
@@ -29,7 +29,7 @@ vertex VertexOut vertex_function(device VertexIn *vertices [[buffer(0)]],
     return out;
 }
 
-fragment float4 fragment_function(VertexOut in [[stage_in]])
+fragment float4 fragmentFunction(VertexOut in [[stage_in]])
 {
     return in.color;
 }
