@@ -10,7 +10,7 @@ typedef struct {
     vector_float4 color;
 } VertexIn;
 
-static const VertexIn quadVertexData[] =
+static const VertexIn vertexData[] =
 {
     { { 0.5, -0.5, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0} },
     { {-0.5, -0.5, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0} },
@@ -61,7 +61,7 @@ static matrix_float4x4 rotationMatrix2D(float radians)
     /*
      * Metal setup: Library
      */
-    NSString* librarySrc = [NSString stringWithContentsOfFile:@"library.msl" encoding:NSUTF8StringEncoding error:&error];
+    NSString* librarySrc = [NSString stringWithContentsOfFile:@"library.metal" encoding:NSUTF8StringEncoding error:&error];
     if(!librarySrc) {
         [NSException raise:@"Failed to read shaders" format:@"%@", [error localizedDescription]];
     }
@@ -89,8 +89,8 @@ static matrix_float4x4 rotationMatrix2D(float radians)
     /*
      * Metal setup: Vertices
      */
-    _vertexBuffer = [_device newBufferWithBytes:quadVertexData
-        length:sizeof(quadVertexData)
+    _vertexBuffer = [_device newBufferWithBytes:vertexData
+        length:sizeof(vertexData)
         options:MTLResourceStorageModePrivate];
 
     /*
