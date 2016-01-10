@@ -113,10 +113,12 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
 - (void)drawInMTKView:(MTKView *)view
 {
     MTLRenderPassDescriptor* desc = [view currentRenderPassDescriptor];
-
+    id<CAMetalDrawable> drawable = [view currentDrawable];
     id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
     id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:desc];
+
     [commandEncoder setRenderPipelineState:pipelineState];
+    [commandBuffer presentDrawable:drawable];
     [commandEncoder endEncoding];
     [commandBuffer commit];
 }
