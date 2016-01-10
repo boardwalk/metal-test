@@ -29,13 +29,6 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
 }
 
 @implementation AppDelegate
-@synthesize window;
-@synthesize device;
-@synthesize library;
-@synthesize pipelineState;
-@synthesize vertexBuffer;
-@synthesize uniformBuffer;
-@synthesize commandQueue;
 
 - (id)init
 {
@@ -46,20 +39,20 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
      */
     NSRect frame = NSMakeRect(0, 0, 640, 480);
 
-    window = [[NSWindow alloc] initWithContentRect:frame
+    _window = [[NSWindow alloc] initWithContentRect:frame
         styleMask:NSTitledWindowMask|NSClosableWindowMask
         backing:NSBackingStoreBuffered
         defer:NO];
 
-    device = MTLCreateSystemDefaultDevice();
+    _device = MTLCreateSystemDefaultDevice();
 
     MTKView* view = [[MTKView alloc] initWithFrame:frame
-        device:device];
+        device:_device];
     [view setDelegate:self];
 
-    [window center];
-    [window setContentView:view];
-    [window makeKeyAndOrderFront:NSApp];
+    [_window center];
+    [_window setContentView:view];
+    [_window makeKeyAndOrderFront:NSApp];
 
     /*
      * Metal setup: Library
@@ -69,8 +62,8 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
         [NSException raise:@"Failed to read shaders" format:@"%@", [error localizedDescription]];
     }
 
-    library = [device newLibraryWithSource:librarySrc options:nil error:&error];
-    if(!library) {
+    _library = [_device newLibraryWithSource:librarySrc options:nil error:&error];
+    if(!_library) {
         [NSException raise:@"Failed to compile shaders" format:@"%@", [error localizedDescription]];
     }
 
@@ -80,32 +73,32 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
     id<CAMetalDrawable> drawable = [view currentDrawable];
 
     MTLRenderPipelineDescriptor* pipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
-    pipelineDesc.vertexFunction = [library newFunctionWithName:@"vertex_function"];
-    pipelineDesc.fragmentFunction = [library newFunctionWithName:@"fragment_function"];
+    pipelineDesc.vertexFunction = [_library newFunctionWithName:@"vertex_function"];
+    pipelineDesc.fragmentFunction = [_library newFunctionWithName:@"fragment_function"];
     pipelineDesc.colorAttachments[0].pixelFormat = drawable.texture.pixelFormat;
 
-    pipelineState = [device newRenderPipelineStateWithDescriptor:pipelineDesc error:&error];
-    if(!pipelineState) {
+    _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineDesc error:&error];
+    if(!_pipelineState) {
         [NSException raise:@"Failed to create pipeline state" format:@"%@", [error localizedDescription]];
     }
 
     /*
      * Metal setup: Vertices
      */
-    vertexBuffer = [device newBufferWithBytes:quadVertexData
+    _vertexBuffer = [_device newBufferWithBytes:quadVertexData
         length:sizeof(quadVertexData)
         options:MTLResourceStorageModePrivate];
 
     /*
      * Metal setup: Uniforms
      */
-    uniformBuffer = [device newBufferWithLength:sizeof(Uniforms)
+    _uniformBuffer = [_device newBufferWithLength:sizeof(Uniforms)
         options:MTLResourceCPUCacheModeWriteCombined];
 
     /*
      * Metal setup: Command queue
      */
-    commandQueue = [device newCommandQueue];
+    _commandQueue = [_device newCommandQueue];
 
     return self;
 }
@@ -129,17 +122,17 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
     Uniforms uniforms = {
         .rotation_matrix = rotation_matrix_2d(rotationAngle)
     };
-    void* bufferPtr = [uniformBuffer contents];
+    void* bufferPtr = [_uniformBuffer contents];
     memcpy(bufferPtr, &uniforms, sizeof(Uniforms));
 
     MTLRenderPassDescriptor* passDescriptor = [view currentRenderPassDescriptor];
     id<CAMetalDrawable> drawable = [view currentDrawable];
-    id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
+    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
     id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:passDescriptor];
 
-    [commandEncoder setRenderPipelineState:pipelineState];
-    [commandEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:0];
-    [commandEncoder setVertexBuffer:uniformBuffer offset:0 atIndex:1];
+    [commandEncoder setRenderPipelineState:_pipelineState];
+    [commandEncoder setVertexBuffer:_vertexBuffer offset:0 atIndex:0];
+    [commandEncoder setVertexBuffer:_uniformBuffer offset:0 atIndex:1];
     [commandEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
     [commandEncoder endEncoding];
     [commandBuffer presentDrawable:drawable];

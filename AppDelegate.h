@@ -1,12 +1,13 @@
 #import <Cocoa/Cocoa.h>
 #import <MetalKit/MetalKit.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, MTKViewDelegate>
-@property (nonatomic) NSWindow *window;
-@property (nonatomic) id<MTLDevice> device;
-@property (nonatomic) id<MTLLibrary> library;
-@property (nonatomic) id<MTLRenderPipelineState> pipelineState;
-@property (nonatomic) id<MTLBuffer> vertexBuffer;
-@property (nonatomic) id<MTLBuffer> uniformBuffer;
-@property (nonatomic) id<MTLCommandQueue> commandQueue;
+@interface AppDelegate : NSObject <NSApplicationDelegate, MTKViewDelegate> {
+    NSWindow *_window;
+    id<MTLDevice> _device;
+    id<MTLLibrary> _library;
+    id<MTLRenderPipelineState> _pipelineState;
+    id<MTLBuffer> _vertexBuffer;
+    id<MTLBuffer> _uniformBuffer;
+    id<MTLCommandQueue> _commandQueue;
+}
 @end
