@@ -68,12 +68,12 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
      */
     NSString* progSrc = [NSString stringWithContentsOfFile:@"shaders.cc" encoding:NSUTF8StringEncoding error:&error];
     if(!progSrc) {
-        NSLog(@"%@", error);
+        [NSException raise:@"Failed to read shaders" format:@"%@", [error localizedDescription]];
     }
 
     library = [device newLibraryWithSource:progSrc options:nil error:&error];
     if(!library) {
-        NSLog(@"%@", error);
+        [NSException raise:@"Failed to compile shaders" format:@"%@", [error localizedDescription]];
     }
 
     /*
@@ -88,7 +88,7 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
 
     pipelineState = [device newRenderPipelineStateWithDescriptor:pipelineDesc error:&error];
     if(!pipelineState) {
-        NSLog(@"%@", error);
+        [NSException raise:@"Failed to create pipeline state" format:@"%@", [error localizedDescription]];
     }
 
     /*
@@ -96,13 +96,13 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
      */
     vertexBuffer = [device newBufferWithBytes:quadVertexData
         length:sizeof(quadVertexData)
-        options:MTLResourceOptionCPUCacheModeDefault];
+        options:MTLResourceStorageModePrivate];
 
     /*
      * Metal setup: Uniforms
      */
     uniformBuffer = [device newBufferWithLength:sizeof(Uniforms)
-        options:MTLResourceOptionCPUCacheModeDefault];
+        options:MTLResourceCPUCacheModeWriteCombined];
 
     /*
      * Metal setup: Command queue
@@ -131,10 +131,10 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
     void* bufferPtr = [uniformBuffer contents];
     memcpy(bufferPtr, &uniforms, sizeof(Uniforms));
 
-    MTLRenderPassDescriptor* desc = [view currentRenderPassDescriptor];
+    MTLRenderPassDescriptor* passDescriptor = [view currentRenderPassDescriptor];
     id<CAMetalDrawable> drawable = [view currentDrawable];
     id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
-    id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:desc];
+    id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:passDescriptor];
 
     [commandEncoder setRenderPipelineState:pipelineState];
     [commandEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:0];
