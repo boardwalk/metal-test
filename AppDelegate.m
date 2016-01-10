@@ -103,20 +103,20 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
     return self;
 }
 
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)theApplication
 {
     (void)theApplication;
     return YES;
 }
 
-- (void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size
+- (void)mtkView:(MTKView*)view drawableSizeWillChange:(CGSize)size
 {
     // Window is not resizable
     (void)view;
     (void)size;
 }
 
-- (void)drawInMTKView:(MTKView *)view
+- (void)drawInMTKView:(MTKView*)view
 {
     double rotationAngle = fmod(CACurrentMediaTime(), 2.0 * M_PI);
     Uniforms uniforms = {

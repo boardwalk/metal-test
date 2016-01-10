@@ -2,7 +2,7 @@
 #import <MetalKit/MetalKit.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, MTKViewDelegate> {
-    NSWindow *_window;
+    NSWindow* _window;
     id<MTLDevice> _device;
     id<MTLLibrary> _library;
     id<MTLRenderPipelineState> _pipelineState;
