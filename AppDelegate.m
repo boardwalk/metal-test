@@ -6,7 +6,12 @@ typedef struct {
     float color[4];
 } VertexIn;
 
-static const VertexIn quadVertexData[] = {
+typedef struct {
+    matrix_float4x4 rotationMatrix;
+} Uniforms;
+
+static const VertexIn quadVertexData[] =
+{
     { { 0.5, -0.5, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0} },
     { {-0.5, -0.5, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0} },
     { {-0.5,  0.5, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0} },
@@ -14,10 +19,6 @@ static const VertexIn quadVertexData[] = {
     { { 0.5, -0.5, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0} },
     { {-0.5,  0.5, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0} }
 };
-
-typedef struct {
-    matrix_float4x4 rotationMatrix;
-} Uniforms;
 
 static matrix_float4x4 rotationMatrix2D(float radians)
 {
