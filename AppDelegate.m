@@ -128,7 +128,8 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
     Uniforms uniforms = {
         .rotation_matrix = rotation_matrix_2d(rotationAngle)
     };
-    memcpy([uniformBuffer contents], &uniforms, sizeof(Uniforms));
+    void* bufferPtr = [uniformBuffer contents];
+    memcpy(bufferPtr, &uniforms, sizeof(Uniforms));
 
     MTLRenderPassDescriptor* desc = [view currentRenderPassDescriptor];
     id<CAMetalDrawable> drawable = [view currentDrawable];
