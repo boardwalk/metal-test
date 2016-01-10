@@ -6,6 +6,7 @@
 @property (nonatomic) id<MTLDevice> device;
 @property (nonatomic) id<MTLLibrary> library;
 @property (nonatomic) id<MTLRenderPipelineState> pipelineState;
+@property (nonatomic) id<MTLBuffer> vertexBuffer;
 @property (nonatomic) id<MTLBuffer> uniformBuffer;
 @property (nonatomic) id<MTLCommandQueue> commandQueue;
 @end

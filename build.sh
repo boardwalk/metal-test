@@ -1,2 +1,2 @@
 #!/bin/sh
-gcc -o metal-test -lobjc -fobjc-arc -framework AppKit -framework Metal -framework MetalKit *.m
+gcc -o metal-test -lobjc -fobjc-arc -framework AppKit -framework Metal -framework MetalKit -framework QuartzCore *.m

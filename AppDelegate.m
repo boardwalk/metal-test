@@ -1,6 +1,17 @@
 #import <simd/simd.h>
 #import "AppDelegate.h"
 
+static const float quadVertexData[] =
+{
+     0.5, -0.5, 0.0, 1.0,     1.0, 0.0, 0.0, 1.0,
+    -0.5, -0.5, 0.0, 1.0,     0.0, 1.0, 0.0, 1.0,
+    -0.5,  0.5, 0.0, 1.0,     0.0, 0.0, 1.0, 1.0,
+
+     0.5,  0.5, 0.0, 1.0,     1.0, 1.0, 0.0, 1.0,
+     0.5, -0.5, 0.0, 1.0,     1.0, 0.0, 0.0, 1.0,
+    -0.5,  0.5, 0.0, 1.0,     0.0, 0.0, 1.0, 1.0,
+};
+
 typedef struct {
     matrix_float4x4 rotation_matrix;
 } Uniforms;
@@ -22,6 +33,7 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
 @synthesize device;
 @synthesize library;
 @synthesize pipelineState;
+@synthesize vertexBuffer;
 @synthesize uniformBuffer;
 @synthesize commandQueue;
 
@@ -69,28 +81,28 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
      */
     id<CAMetalDrawable> drawable = [view currentDrawable];
 
-    MTLRenderPipelineDescriptor* renderPipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
-    renderPipelineDesc.vertexFunction = [library newFunctionWithName:@"vertex_function"];
-    renderPipelineDesc.fragmentFunction = [library newFunctionWithName:@"fragment_function"];
-    renderPipelineDesc.colorAttachments[0].pixelFormat = drawable.texture.pixelFormat;
+    MTLRenderPipelineDescriptor* pipelineDesc = [[MTLRenderPipelineDescriptor alloc] init];
+    pipelineDesc.vertexFunction = [library newFunctionWithName:@"vertex_function"];
+    pipelineDesc.fragmentFunction = [library newFunctionWithName:@"fragment_function"];
+    pipelineDesc.colorAttachments[0].pixelFormat = drawable.texture.pixelFormat;
 
-    pipelineState = [device newRenderPipelineStateWithDescriptor:renderPipelineDesc error:&error];
+    pipelineState = [device newRenderPipelineStateWithDescriptor:pipelineDesc error:&error];
     if(!pipelineState) {
         NSLog(@"%@", error);
     }
 
     /*
-     * Metal setup: Uniforms
+     * Metal setup: Vertices
      */
-    uniformBuffer = [device
-        newBufferWithLength:sizeof(Uniforms)
+    vertexBuffer = [device newBufferWithBytes:quadVertexData
+        length:sizeof(quadVertexData)
         options:MTLResourceOptionCPUCacheModeDefault];
 
-    float rotationAngle = 0.0f;
-    Uniforms uniforms = {
-        .rotation_matrix = rotation_matrix_2d(rotationAngle)
-    };
-    memcpy([uniformBuffer contents], &uniforms, sizeof(Uniforms));
+    /*
+     * Metal setup: Uniforms
+     */
+    uniformBuffer = [device newBufferWithLength:sizeof(Uniforms)
+        options:MTLResourceOptionCPUCacheModeDefault];
 
     /*
      * Metal setup: Command queue
@@ -112,14 +124,23 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
 
 - (void)drawInMTKView:(MTKView *)view
 {
+    double rotationAngle = fmod(CACurrentMediaTime(), 2.0 * M_PI);
+    Uniforms uniforms = {
+        .rotation_matrix = rotation_matrix_2d(rotationAngle)
+    };
+    memcpy([uniformBuffer contents], &uniforms, sizeof(Uniforms));
+
     MTLRenderPassDescriptor* desc = [view currentRenderPassDescriptor];
     id<CAMetalDrawable> drawable = [view currentDrawable];
     id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
     id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:desc];
 
     [commandEncoder setRenderPipelineState:pipelineState];
-    [commandBuffer presentDrawable:drawable];
+    [commandEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:0];
+    [commandEncoder setVertexBuffer:uniformBuffer offset:0 atIndex:1];
+    [commandEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
     [commandEncoder endEncoding];
+    [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
 }
 
