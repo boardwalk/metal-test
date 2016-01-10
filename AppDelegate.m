@@ -6,8 +6,8 @@ typedef struct {
 } Uniforms;
 
 typedef struct {
-    float position[4];
-    float color[4];
+    vector_float4 position;
+    vector_float4 color;
 } VertexIn;
 
 static const VertexIn quadVertexData[] =
