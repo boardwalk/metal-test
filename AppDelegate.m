@@ -46,16 +46,14 @@ static matrix_float4x4 rotation_matrix_2d(float radians)
      */
     NSRect frame = NSMakeRect(0, 0, 640, 480);
 
-    window = [[NSWindow alloc]
-        initWithContentRect:frame
+    window = [[NSWindow alloc] initWithContentRect:frame
         styleMask:NSTitledWindowMask|NSClosableWindowMask
         backing:NSBackingStoreBuffered
         defer:NO];
 
     device = MTLCreateSystemDefaultDevice();
 
-    MTKView* view = [[MTKView alloc]
-        initWithFrame:frame
+    MTKView* view = [[MTKView alloc] initWithFrame:frame
         device:device];
     [view setDelegate:self];
 
