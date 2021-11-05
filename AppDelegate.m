@@ -44,7 +44,7 @@ static matrix_float4x4 rotationMatrix2D(float radians)
     NSRect frame = NSMakeRect(0, 0, 640, 480);
 
     _window = [[NSWindow alloc] initWithContentRect:frame
-        styleMask:NSTitledWindowMask|NSClosableWindowMask
+        styleMask:NSWindowStyleMaskTitled|NSWindowStyleMaskClosable
         backing:NSBackingStoreBuffered
         defer:NO];
 
